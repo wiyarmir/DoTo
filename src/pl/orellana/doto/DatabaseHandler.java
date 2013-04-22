@@ -102,9 +102,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	public void deleteTask(Task t) {
+		deleteTask(t.getId());
+	}
+
+	public void deleteTask(int taskid) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_TASKS, KEY_ID + "=?",
-				new String[] { String.valueOf(t.getId()) });
+				new String[] { String.valueOf(taskid) });
 		db.close();
 	}
 
@@ -119,9 +123,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public Cursor getTasksSearchCursor(String search) {
 
 		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.query(TABLE_TASKS,
-				new String[] { KEY_ID, KEY_TASK, KEY_GROUP}, KEY_GROUP + " LIKE ?",
-				new String[] { search }, null, null, null, null);
+		Cursor cursor = db.query(TABLE_TASKS, new String[] { KEY_ID, KEY_TASK,
+				KEY_GROUP }, KEY_GROUP + " LIKE ?", new String[] { search },
+				null, null, null, null);
 		return cursor;
 	}
 

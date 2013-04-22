@@ -2,8 +2,6 @@ package pl.orellana.doto;
 
 import android.app.FragmentManager;
 import android.app.ListActivity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -46,8 +44,25 @@ public class MainActivity extends ListActivity {
 							int position, long id) {
 						if (position == 0) { // as we set the first element, we
 												// know is ours
-							showAddDialog();
+
+							AddOptionDialog a = new AddOptionDialog();
+							a.show(fm, "fragment_add_item");
+
+						} else {
+							LongPressDialog l = new LongPressDialog(position);
+							l.show(fm, "fragment_options_dialog");
 						}
+					}
+				});
+
+		getListView().setOnItemLongClickListener(
+				new AdapterView.OnItemLongClickListener() {
+
+					@Override
+					public boolean onItemLongClick(AdapterView<?> parent,
+							View view, int position, long id) {
+
+						return false;
 					}
 				});
 	}
@@ -68,26 +83,30 @@ public class MainActivity extends ListActivity {
 
 			@Override
 			public boolean onQueryTextChange(String query) {
-				Cursor c;
 				if (query.equals("")) {
-					c = dbh.getTasksCursor();
+					updateCursor();
 				} else {
-					c = dbh.getTasksSearchCursor(query);
+					((SimpleCursorAdapter) getListAdapter()).changeCursor(dbh
+							.getTasksSearchCursor(query));
 				}
-				((SimpleCursorAdapter) getListAdapter()).changeCursor(c);
-				return false;
+				return true;
 			}
 		});
 		return true;
 	}
 
-	private void showAddDialog() {
-		AddOptionDialog addOptionDialog = new AddOptionDialog();
-		addOptionDialog.show(fm, "fragment_add_item");
-	}
-
 	public void doPositiveClick(String task, String taskgroup) {
 		dbh.addTask(new Task(0, task, taskgroup));
+		updateCursor();
+	}
+
+	public void deleteOne(int p) {
+		Cursor c = (Cursor) getListAdapter().getItem(p - 1);
+		dbh.deleteTask(c.getInt(0));
+		updateCursor();
+	}
+
+	public void updateCursor() {
 		((SimpleCursorAdapter) getListAdapter()).changeCursor(dbh
 				.getTasksCursor());
 	}
