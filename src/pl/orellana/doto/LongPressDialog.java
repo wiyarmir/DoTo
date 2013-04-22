@@ -22,12 +22,15 @@ public class LongPressDialog extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
 		b.setTitle("Actions...");
-		b.setItems(new String[] { "Delete" },
+		b.setItems(new String[] { "Edit", "Delete" },
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
-						case 0: // Delete
+						case 0: // Edit
+							((MainActivity) getActivity()).editOne(p);
+							break;
+						case 1: // Delete
 							((MainActivity) getActivity()).deleteOne(p);
 							break;
 						default:

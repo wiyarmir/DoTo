@@ -1,6 +1,9 @@
 package pl.orellana.doto;
 
-public class Task {
+import java.io.Serializable;
+
+public class Task implements Serializable {
+	private static final long serialVersionUID = 8024427794224889724L;
 	private int id;
 	private String task;
 	private String category;

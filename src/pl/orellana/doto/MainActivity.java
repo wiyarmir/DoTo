@@ -111,4 +111,16 @@ public class MainActivity extends ListActivity {
 				.getTasksCursor());
 	}
 
+	public void doEdit(Task t) {
+		dbh.updateTask(t);
+		updateCursor();
+	}
+
+	public void editOne(int p) {
+		EditOptionDialog l = new EditOptionDialog();
+		Bundle b = new Bundle();
+		b.putSerializable("task", dbh.getTask(p - 1));
+		l.setArguments(b);
+		l.show(fm, "fragment_edit_option");
+	}
 }
