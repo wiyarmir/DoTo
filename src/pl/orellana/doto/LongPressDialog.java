@@ -8,18 +8,15 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class LongPressDialog extends DialogFragment {
-	private int p;
 
 	public LongPressDialog() {
 
 	}
 
-	public LongPressDialog(int position) {
-		p = position;
-	}
-
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		Bundle bu = getArguments();
+		final int p = bu.getInt("position", -1);
 		AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
 		b.setTitle("Actions...");
 		b.setItems(new String[] { "Edit", "Delete" },

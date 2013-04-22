@@ -42,6 +42,7 @@ public class MainActivity extends ListActivity {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
+						// Log.d("onItemClick", "position:" + position);
 						if (position == 0) { // as we set the first element, we
 												// know is ours
 
@@ -49,7 +50,9 @@ public class MainActivity extends ListActivity {
 							a.show(fm, "fragment_add_item");
 
 						} else {
-							LongPressDialog l = new LongPressDialog(position);
+							LongPressDialog l = new LongPressDialog();
+							Bundle b = new Bundle();
+							b.putInt("position", position);
 							l.show(fm, "fragment_options_dialog");
 						}
 					}
@@ -117,9 +120,10 @@ public class MainActivity extends ListActivity {
 	}
 
 	public void editOne(int p) {
+		Cursor c = (Cursor) getListAdapter().getItem(p - 1);
 		EditOptionDialog l = new EditOptionDialog();
 		Bundle b = new Bundle();
-		b.putSerializable("task", dbh.getTask(p - 1));
+		b.putSerializable("task", dbh.getTask(c.getInt(0)));
 		l.setArguments(b);
 		l.show(fm, "fragment_edit_option");
 	}
