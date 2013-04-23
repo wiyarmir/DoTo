@@ -129,4 +129,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return cursor;
 	}
 
+	public Cursor getSuggestionsCursor() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		// String query = "SELECT DISTINCT (RANDOMBLOB(4), " + KEY_GROUP
+		// + ") FROM " + TABLE_TASKS + " AS (_ID, SUGGEST_COLUMN_TEXT_1)";
+		String query = "SELECT DISTINCT " + KEY_GROUP + " FROM " + TABLE_TASKS
+				+ " AS SUGGEST_COLUMN_TEXT_1";
+		Log.d("getSuggestionsCursor()", "Query: " + query);
+		Cursor c = db.rawQuery(query, null);
+		return c;
+	}
+
 }

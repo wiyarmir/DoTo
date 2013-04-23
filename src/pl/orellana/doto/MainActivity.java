@@ -2,11 +2,14 @@ package pl.orellana.doto;
 
 import android.app.FragmentManager;
 import android.app.ListActivity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
@@ -25,15 +28,15 @@ public class MainActivity extends ListActivity {
 		getListView().addHeaderView(
 				getLayoutInflater().inflate(R.layout.first_list_item, null),
 				null, true);
-		dbh = new DatabaseHandler(this);
 
+		dbh = new DatabaseHandler(this);
 		Cursor c = dbh.getTasksCursor();
+
 		ad = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2,
 				c, new String[] { DatabaseHandler.KEY_TASK,
 						DatabaseHandler.KEY_GROUP }, new int[] {
 						android.R.id.text1, android.R.id.text2 },
 				SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
 		setListAdapter(ad);
 
 		getListView().setOnItemClickListener(
@@ -45,10 +48,8 @@ public class MainActivity extends ListActivity {
 						// Log.d("onItemClick", "position:" + position);
 						if (position == 0) { // as we set the first element, we
 												// know is ours
-
 							AddOptionDialog a = new AddOptionDialog();
 							a.show(fm, "fragment_add_item");
-
 						} else {
 							LongPressDialog l = new LongPressDialog();
 							Bundle b = new Bundle();
@@ -64,19 +65,23 @@ public class MainActivity extends ListActivity {
 					@Override
 					public boolean onItemLongClick(AdapterView<?> parent,
 							View view, int position, long id) {
+						if (position != 0) {
 
-						return false;
+							return true;
+						} else {
+							return false;
+						}
 					}
 				});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		SearchView searchView;
+
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		// Get the SearchView and set the searchable configuration
-		SearchView searchView = (SearchView) menu.findItem(R.id.menu_search)
+		searchView = (SearchView) menu.findItem(R.id.menu_search)
 				.getActionView();
-		// Assumes current activity is the searchable activity
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
 			@Override
@@ -95,6 +100,10 @@ public class MainActivity extends ListActivity {
 				return true;
 			}
 		});
+
+		Cursor suggestionCursor = dbh.getSuggestionsCursor();
+
+		searchView.setSearchableInfo(null);
 		return true;
 	}
 
