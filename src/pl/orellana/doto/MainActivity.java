@@ -1,17 +1,18 @@
 package pl.orellana.doto;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ListActivity;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class MainActivity extends ListActivity {
 
@@ -54,6 +55,7 @@ public class MainActivity extends ListActivity {
 							LongPressDialog l = new LongPressDialog();
 							Bundle b = new Bundle();
 							b.putInt("position", position);
+							l.setArguments(b);
 							l.show(fm, "fragment_options_dialog");
 						}
 					}
@@ -103,8 +105,26 @@ public class MainActivity extends ListActivity {
 
 		Cursor suggestionCursor = dbh.getSuggestionsCursor();
 
-		searchView.setSearchableInfo(null);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+		case R.id.menu_about:
+			b.setTitle("Legal Notices")
+					.setNegativeButton("OK", null)
+					.setMessage(
+							GooglePlayServicesUtil
+									.getOpenSourceSoftwareLicenseInfo(this))
+					.create().show();
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	public void doPositiveClick(String task, String taskgroup) {
@@ -135,5 +155,14 @@ public class MainActivity extends ListActivity {
 		b.putSerializable("task", dbh.getTask(c.getInt(0)));
 		l.setArguments(b);
 		l.show(fm, "fragment_edit_option");
+	}
+
+	public void geotag(int p) {
+		Cursor c = (Cursor) getListAdapter().getItem(p - 1);
+
+		GeoTagDialogFragment d = new GeoTagDialogFragment();
+
+		d.show(fm, "fragment_geotag");
+
 	}
 }

@@ -12,12 +12,16 @@ import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 	static final public String DATABASE_NAME = "TODO_DB";
-	static final public int DATABASE_VERSION = 2;
+	static final public int DATABASE_VERSION = 3;
 
 	private static final String TABLE_TASKS = "tasks";
 	public static final String KEY_ID = "_id";
 	public static final String KEY_TASK = "task";
 	public static final String KEY_GROUP = "_group";
+	public static final String KEY_HAS_GEO = "hasgeo";
+	public static final String KEY_GEO_LAT = "geo_lat";
+	public static final String KEY_GEO_LON = "geo_lon";
+	public static final String KEY_GEO_ACC = "geo_acc";
 
 	public DatabaseHandler(Context c) {
 		super(c, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,7 +32,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		Log.d("DATABASE", "Creating database... (onCreate)");
 		String CREATE_TASKS_TABLE = "CREATE TABLE " + TABLE_TASKS + "("
 				+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_TASK + " TEXT,"
-				+ KEY_GROUP + " TEXT" + ")";
+				+ KEY_GROUP + " TEXT" + "," + KEY_HAS_GEO + " INTEGER,"
+				+ KEY_GEO_LAT + " REAL," + KEY_GEO_LON + " REAL," + KEY_GEO_ACC
+				+ "REAL)";
 
 		db.execSQL(CREATE_TASKS_TABLE);
 	}

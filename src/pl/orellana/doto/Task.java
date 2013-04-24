@@ -7,6 +7,25 @@ public class Task implements Serializable {
 	private int id;
 	private String task;
 	private String category;
+	private double latitude, longitude;
+
+	public Task(int id, String task, String category) {
+		this.id = id;
+		this.task = task;
+		this.category = category;
+	}
+
+	public Task(int id, String task, String category, double latitude,
+			double longitude, float accuracy) {
+		this.id = id;
+		this.task = task;
+		this.category = category;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.accuracy = accuracy;
+	}
+
+	private float accuracy;
 
 	public int getId() {
 		return id;
@@ -32,10 +51,28 @@ public class Task implements Serializable {
 		this.category = category_id;
 	}
 
-	public Task(int id, String task, String category) {
-		this.id = id;
-		this.task = task;
-		this.category = category;
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public float getAccuracy() {
+		return accuracy;
+	}
+
+	public void setAccuracy(float accuracy) {
+		this.accuracy = accuracy;
 	}
 
 	public Task() {

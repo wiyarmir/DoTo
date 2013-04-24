@@ -4,5 +4,6 @@
     <string name="app_name">Do To</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_about">Legal Notices</string>
 
 </resources>

@@ -19,7 +19,7 @@ public class LongPressDialog extends DialogFragment {
 		final int p = bu.getInt("position", -1);
 		AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
 		b.setTitle("Actions...");
-		b.setItems(new String[] { "Edit", "Delete" },
+		b.setItems(new String[] { "Edit", "Delete", "Geotag" },
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -29,6 +29,9 @@ public class LongPressDialog extends DialogFragment {
 							break;
 						case 1: // Delete
 							((MainActivity) getActivity()).deleteOne(p);
+							break;
+						case 2: // Geotag
+							((MainActivity) getActivity()).geotag(p);
 							break;
 						default:
 							Toast.makeText(getActivity(), "Unimplemented",
