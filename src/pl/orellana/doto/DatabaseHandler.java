@@ -50,6 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(KEY_TASK, t.getTask());
 		values.put(KEY_GROUP, t.getCategory());
+		values.put(KEY_HAS_GEO, false);
 
 		db.insert(TABLE_TASKS, null, values);
 		db.close();
@@ -59,13 +60,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		Cursor cursor = db.query(TABLE_TASKS, new String[] { KEY_ID, KEY_TASK,
-				KEY_GROUP }, KEY_ID + "=?",
-				new String[] { String.valueOf(id) }, null, null, null, null);
+				KEY_GROUP, KEY_HAS_GEO, KEY_GEO_LAT, KEY_GEO_LON }, KEY_ID
+				+ "=?", new String[] { String.valueOf(id) }, null, null, null,
+				null);
 		if (cursor != null) {
 			cursor.moveToFirst();
 		}
-		Task t = new Task(Integer.parseInt(cursor.getString(0)),
-				cursor.getString(1), cursor.getString(2));
+		Task t;
+		if (cursor.getInt(3) == 1) {
+			t = new Task(Integer.parseInt(cursor.getString(0)),
+					cursor.getString(1), cursor.getString(2),
+					cursor.getDouble(4), cursor.getDouble(5), 0);
+		} else {
+			t = new Task(Integer.parseInt(cursor.getString(0)),
+					cursor.getString(1), cursor.getString(2));
+		}
+		Log.d("getTask", t.toString());
 		return t;
 	}
 
@@ -102,6 +112,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(KEY_TASK, t.getTask());
 		values.put(KEY_GROUP, t.getCategory());
+		values.put(KEY_HAS_GEO, t.hasLocation());
+		if (t.hasLocation()) {
+			values.put(KEY_GEO_LAT, t.getLatitude());
+			values.put(KEY_GEO_LON, t.getLongitude());
+		}
 
 		return db.update(TABLE_TASKS, values, KEY_ID + "=?",
 				new String[] { String.valueOf(t.getId()) });

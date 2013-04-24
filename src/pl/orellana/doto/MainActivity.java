@@ -13,6 +13,7 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends ListActivity {
 
@@ -159,10 +160,15 @@ public class MainActivity extends ListActivity {
 
 	public void geotag(int p) {
 		Cursor c = (Cursor) getListAdapter().getItem(p - 1);
-
 		GeoTagDialogFragment d = new GeoTagDialogFragment();
-
+		Bundle b = new Bundle();
+		b.putSerializable("task", dbh.getTask(c.getInt(0)));
+		d.setArguments(b);
 		d.show(fm, "fragment_geotag");
+	}
 
+	public void doGeoTag(Task t) {
+		dbh.updateTask(t);
+		updateCursor();
 	}
 }

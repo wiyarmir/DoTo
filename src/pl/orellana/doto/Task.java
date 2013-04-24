@@ -7,7 +7,12 @@ public class Task implements Serializable {
 	private int id;
 	private String task;
 	private String category;
+	private boolean haslocation;
 	private double latitude, longitude;
+	private float accuracy;
+
+	public Task() {
+	}
 
 	public Task(int id, String task, String category) {
 		this.id = id;
@@ -23,9 +28,15 @@ public class Task implements Serializable {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.accuracy = accuracy;
+		this.haslocation = true;
 	}
 
-	private float accuracy;
+	@Override
+	public String toString() {
+		return "Task [id=" + id + ", task=" + task + ", category=" + category
+				+ ", haslocation=" + haslocation + ", latitude=" + latitude
+				+ ", longitude=" + longitude + ", accuracy=" + accuracy + "]";
+	}
 
 	public int getId() {
 		return id;
@@ -75,6 +86,11 @@ public class Task implements Serializable {
 		this.accuracy = accuracy;
 	}
 
-	public Task() {
+	public boolean hasLocation() {
+		return haslocation;
+	}
+
+	public void setHaslocation(boolean haslocation) {
+		this.haslocation = haslocation;
 	}
 }

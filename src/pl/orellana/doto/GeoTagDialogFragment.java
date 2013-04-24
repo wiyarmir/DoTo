@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -28,16 +29,18 @@ public class GeoTagDialogFragment extends DialogFragment implements
 	private static View view = null;
 	private GoogleMap map;
 	private Marker lastmarker = null;
+	private Task t;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Log.d("onCreateDialog", "start");
+		t = (Task) getArguments().getSerializable("task");
+
 		if (view != null) {
 			Log.d("onCreateDialog", "view is not null");
 			ViewGroup parent = (ViewGroup) view.getParent();
@@ -63,6 +66,8 @@ public class GeoTagDialogFragment extends DialogFragment implements
 			map.setOnMapClickListener(this);
 			map.setOnMapLongClickListener(this);
 
+			map.clear();
+
 			LocationManager lm = (LocationManager) getActivity()
 					.getSystemService(Context.LOCATION_SERVICE);
 			Location loc = lm
@@ -74,13 +79,35 @@ public class GeoTagDialogFragment extends DialogFragment implements
 						"You are here"));
 				map.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 15));
 			}
+			if (t.hasLocation()) {
+				LatLng ll = new LatLng(t.getLatitude(), t.getLongitude());
+				Log.d("onCreateDialog", "we have previous location:" + ll);
+				lastmarker = map
+						.addMarker(new MarkerOptions()
+								.position(ll)
+								.icon(BitmapDescriptorFactory
+										.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+								.title("Geotag location"));
+				map.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 15));
+			}
 		}
 
 		AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
 
 		Log.d("onCreateDialog", "setting view " + view);
-		b.setView(view);
-		b.setPositiveButton("OK", null).setNegativeButton("Cancel", null);
+		b.setTitle("Set mark on map").setView(view);
+		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (lastmarker != null) {
+					t.setLatitude(lastmarker.getPosition().latitude);
+					t.setLongitude(lastmarker.getPosition().longitude);
+					t.setHaslocation(true);
+					Log.d("onClickListener", "saving " + t);
+					((MainActivity) getActivity()).doGeoTag(t);
+				}
+			}
+		}).setNegativeButton("Cancel", null);
 
 		return b.create();
 	}
@@ -100,6 +127,5 @@ public class GeoTagDialogFragment extends DialogFragment implements
 				.icon(BitmapDescriptorFactory
 						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 				.title("Geotag location"));
-
 	}
 }
